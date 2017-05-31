@@ -9,8 +9,8 @@ module.exports = (mapping, options) => {
   const onMissing = options.onMissing ? options.onMissing : 'error'
   const obj = {}
   Object.keys(mapping).forEach(function(envKey) {
-    let mappingValue = mapping[envKey]
-    let envValue = process.env[envKey]
+    var mappingValue = mapping[envKey]
+    var envValue = process.env[envKey]
     if (!envValue) {
       if (typeof mappingValue === 'object' && mappingValue.onMissing) {
         switch (mappingValue.onMissing) {
@@ -39,9 +39,9 @@ module.exports = (mapping, options) => {
       }
     }
     if (typeof mappingValue === 'boolean' && !!mappingValue) {
-      let destinationKey = envKey.toLowerCase()
-      let skip = false
-      let transformedDestinationKey = ''
+      var destinationKey = envKey.toLowerCase()
+      var skip = false
+      var transformedDestinationKey = ''
       for (i = 0; i < destinationKey.length; i += 1) {
         if (skip) {
           skip = false
