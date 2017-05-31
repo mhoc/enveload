@@ -1,9 +1,9 @@
 const assert = require('assert')
 const enveload = require('../index')
 
-describe('enveload', function() {
+describe('field mappings', function() {
   
-  describe('boolean field mapping', function() {
+  describe('booleans', function() {
     it('should load and rename a basic environment variable', function() {
       process.env.SECRET_API_KEY = '887766'
       const settings = enveload({ 
@@ -13,7 +13,7 @@ describe('enveload', function() {
     })
   })
 
-  describe('string field mapping', function() {
+  describe('strings', function() {
     it('should load a basic environment variable to a string mapping', function() {
       process.env.SECRET_API_KEY = '643890'
       const settings = enveload({
@@ -30,7 +30,7 @@ describe('enveload', function() {
     })
   })
 
-  describe('object field mapping', function() {
+  describe('objects', function() {
     it('should load a basic environment variable to an object mapping', function() {
       process.env.SECRET_API_KEY = '3185046'
       const settings = enveload({
@@ -47,23 +47,17 @@ describe('enveload', function() {
     })
   })
 
-  describe('validation', function() {
+})
+
+describe('validation', function() {
+
+  describe('basic', function() {
     it('should throw an error if a envvar isnt provided', function() {
       assert.throws(() => {
         enveload({
           SECRET_API_KEY_38490283409234: true 
         })
       }, (err) => !!err)
-    })
-    it('should print a warning if asked and an envar isnt provided', function() {
-      enveload({
-        SECRET_API_KEY_90890384203: true,
-      }, {
-        onMissing: 'log',
-        log: (missingEnv) => {
-          assert.equal(missingEnv, 'SECRET_API_KEY_90890384203')
-        }
-      })
     })
     it('should throw an error if a key demands it, even if global config doesnt', function() {
       assert.throws(() => {
@@ -72,6 +66,19 @@ describe('enveload', function() {
         }, {
           onMissing: 'warn',
         })
+      })
+    })
+  })
+  
+  describe('warnings', function() {
+    it('should print a warning if asked and an envar isnt provided', function() {
+      enveload({
+        SECRET_API_KEY_90890384203: true,
+      }, {
+        onMissing: 'log',
+        log: (missingEnv) => {
+          assert.equal(missingEnv, 'SECRET_API_KEY_90890384203')
+        }
       })
     })
     it('should log a warning if asked even if global config demands an error', function() {
@@ -86,7 +93,26 @@ describe('enveload', function() {
     })
   })
 
-  describe('json parsing', function() {
+  describe('ignoring', function() {
+    it('should do nothing if validation is set to ignore', function() {
+      enveload({
+        SECPOJFSDOFJSDF: { to: 'obj', onMissing: 'ignore' },
+      })
+    })
+    it('should respect global ignore setting', function() {
+      enveload({
+        SPODJFSODJFSPDF: true,
+      }, {
+        onMissing: 'ignore'
+      })
+    })
+  })
+
+})
+
+describe('parsing', function() {
+
+  describe('number', function() {
     it('should parse a basic json number', function() {
       process.env.JSON_NUMBER = '55'
       const settings = enveload({
@@ -94,6 +120,9 @@ describe('enveload', function() {
       })
       assert.equal(typeof settings.jsonNumber, 'number');
     })
+  })
+
+  describe('object', function() {
     it('should parse a basic json object', function() {
       process.env.JSON_OBJECT = '{"hello":"world"}'
       const settings = enveload({
@@ -102,6 +131,9 @@ describe('enveload', function() {
       assert.equal(typeof settings.jsonObject, 'object');
       assert.equal(settings.jsonObject.hello, 'world');
     })
+  })
+
+  describe('array', function() {
     it('should parse a basic json array', function() {
       process.env.JSON_ARRAY = '["hello","world"]';
       const settings = enveload({
@@ -113,7 +145,7 @@ describe('enveload', function() {
     })
   })
 
-  describe('json parsing options', function() {
+  describe('options', function() {
     it('should refuse to parse json if asked', function() {
       process.env.JSON_OBJECT = '{"hello":"world"}'
       const settings = enveload({

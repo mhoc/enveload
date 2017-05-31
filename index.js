@@ -17,12 +17,14 @@ module.exports = (mapping, options) => {
           case 'error': throw (envKey + ' not provided by the environment')
           case 'log': log(envKey); break
           case 'warn': log(envKey); break
+          case 'ignore': break
         }
       } else {
         switch (onMissing) {
           case 'error': throw (envKey + ' not provided by the environment')
           case 'log': log(envKey); break
           case 'warn': log(envKey); break
+          case 'ignore': break
         }
       }
       return
