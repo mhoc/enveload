@@ -97,6 +97,14 @@ require('enveload')({
 })
 ```
 
+You can also load a single environment variable into different places inside the resulting object, if your use-case demands it.
+
+```js
+require('enveload')({
+  SECRET_API_TOKEN: { to: [ 'location1', 'location2.location3' ] },
+})
+```
+
 # Meteor Support
 
 This library is especially useful for assembling a `Meteor.settings` object from multiple envvars instead of a single big `METEOR_SETTINGS` envvar.

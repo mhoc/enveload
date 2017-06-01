@@ -47,6 +47,18 @@ describe('field mappings', function() {
     })
   })
 
+  describe('multiple destinations', function() {
+    it('should load a single envvar into multiple destinations if requested', function() {
+      process.env.SECRET_API_KEY = '3742837'
+      const settings = enveload({
+        SECRET_API_KEY: { to: [ 'one', 'two', 'three.four.five' ] },
+      })
+      assert.equal(settings.one, '3742837');
+      assert.equal(settings.two, '3742837');
+      assert.equal(settings.three.four.five, '3742837');
+    })
+  })
+
 })
 
 describe('validation', function() {

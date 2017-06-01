@@ -59,7 +59,14 @@ module.exports = (mapping, options) => {
       set(obj, mappingValue, envValue)
     } else if (typeof mappingValue === 'object') {
       if (!mappingValue.to) throw 'Must provide a `to` key in field mapping'
-      set(obj, mappingValue.to, envValue)
+      if (typeof mappingValue.to === 'string') {
+        set(obj, mappingValue.to, envValue)
+      } else if (typeof mappingValue.to === 'object') {
+        // actually an array. if you provide an object, ur gonna break it.
+        mappingValue.to.forEach(function(destination) {
+          set(obj, destination, envValue)
+        })
+      }
     }
   })
   return obj
